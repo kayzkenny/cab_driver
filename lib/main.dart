@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cab_driver/screens/main_page.dart';
+import 'package:cab_driver/screens/registration_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,9 +40,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: MainPage.id,
+      initialRoute: RegistrationPage.id,
       routes: {
         MainPage.id: (context) => MainPage(),
+        RegistrationPage.id: (context) => RegistrationPage(),
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class MainPage extends StatefulWidget {
   static const String id = "mainpage";
@@ -14,11 +15,17 @@ class _MainPageState extends State<MainPage> {
         title: Text('Main Page'),
       ),
       body: SafeArea(
-        child: MaterialButton(
-          onPressed: () {},
-          color: Colors.blue,
-          minWidth: 200,
-          child: Text('Hello'),
+        child: Center(
+          child: MaterialButton(
+            onPressed: () {
+              DatabaseReference ref =
+                  FirebaseDatabase.instance.reference().child('testing');
+              ref.set('testing connection');
+            },
+            color: Colors.blue,
+            minWidth: 200,
+            child: Text('Test Connection'),
+          ),
         ),
       ),
     );

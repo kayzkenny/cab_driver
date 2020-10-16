@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cab_driver/screens/main_page.dart';
+import 'package:cab_driver/screens/vehicle_info_page.dart';
 import 'package:cab_driver/screens/registration_page.dart';
 
 Future<void> main() async {
@@ -40,10 +41,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: RegistrationPage.id,
+      initialRoute: VehicleInfoPage.id,
       routes: {
         MainPage.id: (context) => MainPage(),
         RegistrationPage.id: (context) => RegistrationPage(),
+        VehicleInfoPage.id: (context) => VehicleInfoPage(),
       },
     );
   }

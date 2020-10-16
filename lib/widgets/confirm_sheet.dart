@@ -4,6 +4,17 @@ import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:cab_driver/widgets/taxi_outline_button.dart';
 
 class ConfirmSheet extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final Function onPressed;
+
+  const ConfirmSheet({
+    this.title,
+    this.subtitle,
+    this.onPressed,
+    Key key,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,7 +34,7 @@ class ConfirmSheet extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            'GO ONLINE',
+            title,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 22,
@@ -34,7 +45,7 @@ class ConfirmSheet extends StatelessWidget {
           Container(
             width: 300,
             child: Text(
-              'You are about to become avaliable to receive trip requests.',
+              subtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: BrandColors.colorTextLight,
@@ -51,8 +62,10 @@ class ConfirmSheet extends StatelessWidget {
               ),
               TaxiButton(
                 title: 'CONFIRM',
-                color: BrandColors.colorGreen,
-                onPressed: () {},
+                color: (title == 'GO ONLINE')
+                    ? BrandColors.colorGreen
+                    : Colors.red,
+                onPressed: onPressed,
               ),
             ],
           )

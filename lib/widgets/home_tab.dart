@@ -22,6 +22,9 @@ class _HomeTabState extends State<HomeTab> {
   Position currentPosition;
   double mapTopPadding = 135;
   DatabaseReference tripRequestRef;
+  String availabilityTitle = 'GO ONLINE';
+  Color availabilityColor = BrandColors.colorOrange;
+  bool isAvailable = false;
 
   final geolocator = GeolocatorPlatform.instance;
   final locationOptions = LocationOptions(
@@ -74,6 +77,13 @@ class _HomeTabState extends State<HomeTab> {
     tripRequestRef.onValue.listen((event) {});
   }
 
+  Future<void> goOffline() async {
+    await Geofire.removeLocation(currentFirebaseUser.uid);
+    tripRequestRef.onDisconnect();
+    await tripRequestRef.remove();
+    tripRequestRef = null;
+  }
+
   void getlocationUpdates() {
     homeTabPositionStream = geolocator
         .getPositionStream(
@@ -83,11 +93,13 @@ class _HomeTabState extends State<HomeTab> {
         .listen((Position position) {
       currentPosition = position;
 
-      Geofire.setLocation(
-        currentFirebaseUser.uid,
-        position.latitude,
-        position.longitude,
-      );
+      if (isAvailable) {
+        Geofire.setLocation(
+          currentFirebaseUser.uid,
+          position.latitude,
+          position.longitude,
+        );
+      }
 
       LatLng pos = LatLng(
         position.latitude,
@@ -132,15 +144,40 @@ class _HomeTabState extends State<HomeTab> {
           color: BrandColors.colorPrimary,
           child: Center(
             child: AvailabilityButton(
-              title: 'GO ONLINE',
-              color: BrandColors.colorOrange,
+              title: availabilityTitle,
+              color: availabilityColor,
               onPressed: () async {
-                // await goOnline();
-                // getlocationUpdates();
                 showModalBottomSheet(
                   context: context,
                   isDismissible: false,
-                  builder: (context) => ConfirmSheet(),
+                  builder: (context) => ConfirmSheet(
+                    title: (!isAvailable) ? 'GO ONLINE' : 'GO OFFLINE',
+                    subtitle: (!isAvailable)
+                        ? 'You are about to become available to receive trip requests'
+                        : 'You will stop receiving new trip requests',
+                    onPressed: (!isAvailable)
+                        ? () async {
+                            await goOnline();
+                            getlocationUpdates();
+                            Navigator.pop(context);
+
+                            setState(() {
+                              availabilityColor = BrandColors.colorGreen;
+                              availabilityTitle = 'GO OFFLINE';
+                              isAvailable = true;
+                            });
+                          }
+                        : () async {
+                            await goOffline();
+                            Navigator.pop(context);
+
+                            setState(() {
+                              availabilityColor = BrandColors.colorOrange;
+                              availabilityTitle = 'GO ONLINE';
+                              isAvailable = false;
+                            });
+                          },
+                  ),
                 );
               },
             ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
+import 'package:cab_driver/widgets/confirm_sheet.dart';
 import 'package:cab_driver/helpers/helper_methods.dart';
 import 'package:cab_driver/widgets/global_variables.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -21,6 +22,7 @@ class _HomeTabState extends State<HomeTab> {
   Position currentPosition;
   double mapTopPadding = 135;
   DatabaseReference tripRequestRef;
+
   final geolocator = GeolocatorPlatform.instance;
   final locationOptions = LocationOptions(
     accuracy: LocationAccuracy.bestForNavigation,
@@ -133,8 +135,13 @@ class _HomeTabState extends State<HomeTab> {
               title: 'GO ONLINE',
               color: BrandColors.colorOrange,
               onPressed: () async {
-                await goOnline();
-                getlocationUpdates();
+                // await goOnline();
+                // getlocationUpdates();
+                showModalBottomSheet(
+                  context: context,
+                  isDismissible: false,
+                  builder: (context) => ConfirmSheet(),
+                );
               },
             ),
           ),

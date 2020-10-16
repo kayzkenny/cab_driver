@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cab_driver/screens/main_page.dart';
+import 'package:cab_driver/screens/login_page.dart';
 import 'package:cab_driver/screens/vehicle_info_page.dart';
 import 'package:cab_driver/screens/registration_page.dart';
 
@@ -38,12 +39,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        fontFamily: 'Brand-Regular',
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: RegistrationPage.id,
+      initialRoute: LoginPage.id,
       routes: {
         MainPage.id: (context) => MainPage(),
+        LoginPage.id: (context) => LoginPage(),
         RegistrationPage.id: (context) => RegistrationPage(),
         VehicleInfoPage.id: (context) => VehicleInfoPage(),
       },

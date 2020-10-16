@@ -1,25 +1,23 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cab_driver/screens/login_page.dart';
+import 'package:cab_driver/screens/main_page.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
-import 'package:cab_driver/widgets/global_vehicles.dart';
 import 'package:cab_driver/widgets/progress_dialog.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:cab_driver/screens/vehicle_info_page.dart';
+import 'package:cab_driver/screens/registration_page.dart';
 
-class RegistrationPage extends StatefulWidget {
-  static const String id = 'register';
+class LoginPage extends StatefulWidget {
+  static const String id = 'login';
 
   @override
-  _RegistrationPageState createState() => _RegistrationPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class _LoginPageState extends State<LoginPage> {
   ConnectivityResult _connectionStatus;
 
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
@@ -31,10 +29,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   final formKey = GlobalKey<FormState>();
-
-  final fullNameController = TextEditingController();
-
-  final phoneController = TextEditingController();
 
   final emailController = TextEditingController();
 
@@ -51,48 +45,35 @@ class _RegistrationPageState extends State<RegistrationPage> {
     scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
-  Future<void> registerUser() async {
+  Future<void> login() async {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => ProgressDialog(
-        status: 'Registering you...',
+        status: 'Logging you in...',
       ),
     );
 
     try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
-
       // check if user registration was successful
       if (userCredential != null) {
-        DatabaseReference newUserRef = FirebaseDatabase.instance
-            .reference()
-            .child('drivers/${userCredential.user.uid}');
-
-        // prepare data to be saved on users table
-        Map userMap = {
-          'fullname': fullNameController.text.trim(),
-          'email': emailController.text.trim(),
-          'phone': phoneController.text.trim(),
-        };
-
-        await newUserRef.set(userMap);
-
-        currentFirebaseUser = userCredential.user;
-
-        // route the user to the vehicle info page
-        Navigator.pushNamed(context, VehicleInfoPage.id);
+        // route the user to the main page
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          MainPage.id,
+          (route) => false,
+        );
       }
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
-      if (e.code == 'weak-password') {
-        showSnackbar('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        showSnackbar('The account already exists for that email.');
+      if (e.code == 'user-not-found') {
+        showSnackbar('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        showSnackbar('Wrong password provided for that user.');
       }
     } catch (e) {
       Navigator.pop(context);
@@ -160,7 +141,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -177,7 +157,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
               SizedBox(height: 32),
               Text(
-                'Create a Driver\'s Account',
+                'Sign In as a Driver',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -198,48 +178,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Email Address',
-                        labelStyle: TextStyle(
-                          fontSize: 14.0,
-                        ),
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 10.0,
-                        ),
-                      ),
-                      style: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    TextFormField(
-                      controller: fullNameController,
-                      validator: (value) => value.length < 8
-                          ? 'Enter a full name at least 6 characters long'
-                          : null,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        labelText: 'Full Name',
-                        labelStyle: TextStyle(
-                          fontSize: 14.0,
-                        ),
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 10.0,
-                        ),
-                      ),
-                      style: TextStyle(
-                        fontSize: 14.0,
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    TextFormField(
-                      controller: phoneController,
-                      validator: (value) => value.length < 8
-                          ? 'Enter a phone number at least 10 characters long'
-                          : null,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: 'Phone Number',
                         labelStyle: TextStyle(
                           fontSize: 14.0,
                         ),
@@ -278,7 +216,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
               SizedBox(height: 64),
               TaxiButton(
-                title: 'REGISTER',
+                title: 'LOGIN',
                 color: BrandColors.colorAccentPurple,
                 onPressed: () async {
                   if (formKey.currentState.validate()) {
@@ -287,7 +225,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       showSnackbar('No Internet Connection');
                       return;
                     }
-                    await registerUser();
+                    await login();
                   }
                 },
               ),
@@ -296,11 +234,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 onPressed: () {
                   Navigator.pushNamedAndRemoveUntil(
                     context,
-                    LoginPage.id,
+                    RegistrationPage.id,
                     (route) => false,
                   );
                 },
-                child: Text('Already have a Driver\'s Account? Log in'),
+                child: Text('Don\'t have an account, sign up here'),
               ),
             ],
           ),

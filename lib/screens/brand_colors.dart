@@ -7,8 +7,8 @@ class BrandColors {
   static const Color colorText = Color(0xFF383635);
   static const Color colorGreen = Color(0xFF40cf89);
   static const Color colorAccent = Color(0xFF21ba45);
-  static const Color colorOrange = Color(0xFFE8913A);
-  static const Color colorPrimary = Color(0xFF2B1A64);
+  static const Color colorOrange = Color(0xFFd16608);
+  static const Color colorPrimary = Color(0xFF0e1526);
   static const Color colorAccent1 = Color(0xFFe3fded);
   static const Color colorDimText = Color(0xFFadadad);
   static const Color colorTextDark = Color(0xFF292828);

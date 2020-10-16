@@ -1,5 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cab_driver/widgets/home_tab.dart';
+import 'package:cab_driver/widgets/profile_tab.dart';
+import 'package:cab_driver/widgets/ratings_tab.dart';
+import 'package:cab_driver/widgets/earnings_tab.dart';
+import 'package:cab_driver/screens/brand_colors.dart';
 
 class MainPage extends StatefulWidget {
   static const String id = "mainpage";
@@ -7,27 +13,75 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage>
+    with SingleTickerProviderStateMixin {
+  TabController tabController;
+  int selectedIndex = 0;
+
+  void onItemClicked(int index) {
+    setState(() {
+      selectedIndex = index;
+      tabController.index = selectedIndex;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tabController = TabController(
+      length: 4,
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Main Page'),
-        centerTitle: true,
-      ),
       body: SafeArea(
-        child: Center(
-          child: MaterialButton(
-            onPressed: () {
-              DatabaseReference ref =
-                  FirebaseDatabase.instance.reference().child('testing');
-              ref.set('testing connection');
-            },
-            color: Colors.blue,
-            minWidth: 200,
-            child: Text('Test Connection'),
-          ),
+        child: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: tabController,
+          children: [
+            HomeTab(),
+            EarningsTab(),
+            RatingsTab(),
+            ProfileTab(),
+          ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.credit_card_outlined),
+            label: 'Earnings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star_outline),
+            label: 'Ratings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Account',
+          ),
+        ],
+        currentIndex: selectedIndex,
+        unselectedItemColor: BrandColors.colorIcon,
+        selectedItemColor: BrandColors.colorOrange,
+        showSelectedLabels: true,
+        selectedLabelStyle: TextStyle(fontSize: 12),
+        type: BottomNavigationBarType.fixed,
+        onTap: onItemClicked,
       ),
     );
   }

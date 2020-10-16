@@ -1,11 +1,13 @@
 import 'dart:io';
 
-import 'package:cab_driver/widgets/global_vehicles.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'providers/app_data.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cab_driver/screens/main_page.dart';
 import 'package:cab_driver/screens/login_page.dart';
+import 'package:cab_driver/widgets/global_vehicles.dart';
 import 'package:cab_driver/screens/vehicle_info_page.dart';
 import 'package:cab_driver/screens/registration_page.dart';
 
@@ -40,20 +42,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        fontFamily: 'Brand-Regular',
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return ChangeNotifierProvider(
+      create: (context) => AppData(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          fontFamily: 'Brand-Regular',
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        initialRoute:
+            (currentFirebaseUser == null) ? LoginPage.id : MainPage.id,
+        routes: {
+          MainPage.id: (context) => MainPage(),
+          LoginPage.id: (context) => LoginPage(),
+          RegistrationPage.id: (context) => RegistrationPage(),
+          VehicleInfoPage.id: (context) => VehicleInfoPage(),
+        },
       ),
-      initialRoute: (currentFirebaseUser == null) ? LoginPage.id : MainPage.id,
-      routes: {
-        MainPage.id: (context) => MainPage(),
-        LoginPage.id: (context) => LoginPage(),
-        RegistrationPage.id: (context) => RegistrationPage(),
-        VehicleInfoPage.id: (context) => VehicleInfoPage(),
-      },
     );
   }
 }

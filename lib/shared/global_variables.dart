@@ -1,3 +1,4 @@
+import 'package:cab_driver/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -13,3 +14,5 @@ final CameraPosition googlePlex = CameraPosition(
 );
 
 auth.User currentFirebaseUser;
+
+User currentUserInfo;

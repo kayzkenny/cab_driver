@@ -13,6 +13,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Main Page'),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Center(

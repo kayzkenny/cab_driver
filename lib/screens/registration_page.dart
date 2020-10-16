@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cab_driver/screens/vehicle_info_page.dart';
+import 'package:cab_driver/widgets/global_vehicles.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
@@ -78,14 +80,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
           'phone': phoneController.text.trim(),
         };
 
-        newUserRef.set(userMap);
+        await newUserRef.set(userMap);
 
-        // route the user to the main page
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          MainPage.id,
-          (route) => false,
-        );
+        currentFirebaseUser = userCredential.user;
+
+        // route the user to the vehicle info page
+        Navigator.pushNamed(context, VehicleInfoPage.id);
       }
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);

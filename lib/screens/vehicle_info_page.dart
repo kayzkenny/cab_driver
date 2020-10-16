@@ -1,8 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:cab_driver/screens/main_page.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
+import 'package:cab_driver/widgets/global_vehicles.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class VehicleInfoPage extends StatelessWidget {
   static const String id = 'vehicleinfo';
@@ -11,6 +12,19 @@ class VehicleInfoPage extends StatelessWidget {
   final carModelController = TextEditingController();
   final carColorController = TextEditingController();
   final vehicleNumberController = TextEditingController();
+
+  Future<void> updateProfile() async {
+    String id = currentFirebaseUser.uid;
+    DatabaseReference driveRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/$id/vehicle_details');
+    Map map = {
+      'car_color': carColorController.text.trim(),
+      'car_model': carModelController.text.trim(),
+      'vehicle_number': vehicleNumberController.text.trim(),
+    };
+    await driveRef.set(map);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +99,15 @@ class VehicleInfoPage extends StatelessWidget {
                 TaxiButton(
                   color: BrandColors.colorGreen,
                   title: 'PROCEED',
-                  onPressed: () {
-                    if (formKey.currentState.validate()) {}
+                  onPressed: () async {
+                    if (formKey.currentState.validate()) {
+                      await updateProfile();
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        MainPage.id,
+                        (route) => false,
+                      );
+                    }
                   },
                 )
               ],

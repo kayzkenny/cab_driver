@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: VehicleInfoPage.id,
+      initialRoute: RegistrationPage.id,
       routes: {
         MainPage.id: (context) => MainPage(),
         RegistrationPage.id: (context) => RegistrationPage(),

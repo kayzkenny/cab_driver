@@ -6,7 +6,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:cab_driver/shared/api_keys.dart';
 import 'package:cab_driver/providers/app_data.dart';
 import 'package:cab_driver/helpers/request_helper.dart';
-import 'package:cab_driver/widgets/global_vehicles.dart';
+import 'package:cab_driver/widgets/global_variables.dart';
 
 class HelperMethods {
   static Future<String> findCoordinateAddress(

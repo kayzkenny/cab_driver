@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cab_driver/screens/main_page.dart';
 import 'package:cab_driver/screens/login_page.dart';
-import 'package:cab_driver/widgets/global_vehicles.dart';
+import 'package:cab_driver/widgets/global_variables.dart';
 import 'package:cab_driver/screens/vehicle_info_page.dart';
 import 'package:cab_driver/screens/registration_page.dart';
 

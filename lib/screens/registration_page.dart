@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cab_driver/screens/login_page.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
-import 'package:cab_driver/widgets/global_vehicles.dart';
+import 'package:cab_driver/widgets/global_variables.dart';
 import 'package:cab_driver/widgets/progress_dialog.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cab_driver/screens/vehicle_info_page.dart';

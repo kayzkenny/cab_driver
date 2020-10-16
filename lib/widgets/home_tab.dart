@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:cab_driver/helpers/helper_methods.dart';
-import 'package:cab_driver/widgets/global_vehicles.dart';
+import 'package:cab_driver/widgets/global_variables.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cab_driver/widgets/availability_button.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -20,8 +20,12 @@ class _HomeTabState extends State<HomeTab> {
   GoogleMapController mapController;
   Position currentPosition;
   double mapTopPadding = 135;
-
   DatabaseReference tripRequestRef;
+  final geolocator = GeolocatorPlatform.instance;
+  final locationOptions = LocationOptions(
+    accuracy: LocationAccuracy.bestForNavigation,
+    distanceFilter: 4,
+  );
 
   Future<void> setupPositionLocator() async {
     Position position = await getCurrentPosition(
@@ -68,6 +72,35 @@ class _HomeTabState extends State<HomeTab> {
     tripRequestRef.onValue.listen((event) {});
   }
 
+  void getlocationUpdates() {
+    homeTabPositionStream = geolocator
+        .getPositionStream(
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
+      distanceFilter: 4,
+    )
+        .listen((Position position) {
+      currentPosition = position;
+
+      Geofire.setLocation(
+        currentFirebaseUser.uid,
+        position.latitude,
+        position.longitude,
+      );
+
+      LatLng pos = LatLng(
+        position.latitude,
+        position.longitude,
+      );
+      CameraPosition cp = CameraPosition(
+        target: pos,
+        zoom: 14,
+      );
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(cp),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -99,7 +132,10 @@ class _HomeTabState extends State<HomeTab> {
             child: AvailabilityButton(
               title: 'GO ONLINE',
               color: BrandColors.colorOrange,
-              onPressed: goOnline,
+              onPressed: () async {
+                await goOnline();
+                getlocationUpdates();
+              },
             ),
           ),
         ),

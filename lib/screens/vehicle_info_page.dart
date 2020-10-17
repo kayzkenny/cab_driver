@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cab_driver/screens/main_page.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
-import 'package:cab_driver/widgets/global_variables.dart';
+import 'package:cab_driver/shared/global_variables.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class VehicleInfoPage extends StatelessWidget {

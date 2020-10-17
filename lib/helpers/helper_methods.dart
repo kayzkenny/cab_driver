@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:cab_driver/models/address.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:cab_driver/shared/api_keys.dart';
-import 'package:cab_driver/providers/app_data.dart';
 import 'package:cab_driver/helpers/request_helper.dart';
-import 'package:cab_driver/widgets/global_variables.dart';
+import 'package:cab_driver/shared/global_variables.dart';
 
 class HelperMethods {
   static Future<String> findCoordinateAddress(

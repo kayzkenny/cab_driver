@@ -2,14 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:cab_driver/widgets/confirm_sheet.dart';
 import 'package:cab_driver/helpers/helper_methods.dart';
-import 'package:cab_driver/widgets/global_variables.dart';
+import 'package:cab_driver/shared/global_variables.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cab_driver/widgets/availability_button.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cab_driver/helpers/push_notification_service.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -84,6 +86,14 @@ class _HomeTabState extends State<HomeTab> {
     tripRequestRef = null;
   }
 
+  Future<void> getCurrentDriverInfo() async {
+    currentFirebaseUser = FirebaseAuth.instance.currentUser;
+    PushNotificationService pushNotificationService = PushNotificationService();
+
+    await pushNotificationService.initialize();
+    await pushNotificationService.getToken();
+  }
+
   void getlocationUpdates() {
     homeTabPositionStream = geolocator
         .getPositionStream(
@@ -113,6 +123,13 @@ class _HomeTabState extends State<HomeTab> {
         CameraUpdate.newCameraPosition(cp),
       );
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentDriverInfo();
   }
 
   @override

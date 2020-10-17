@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:geolocator/geolocator.dart';
 import 'package:cab_driver/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -7,6 +10,8 @@ String geocodeEndpoint = '$googleMapsEndpoint/geocode/json';
 String placesEndpoint = '$googleMapsEndpoint/place/autocomplete/json';
 String placeDetailsEndpoint = '$googleMapsEndpoint/place/details/json';
 String directionsEndpoint = '$googleMapsEndpoint/directions/json';
+
+StreamSubscription<Position> homeTabPositionStream;
 
 final CameraPosition googlePlex = CameraPosition(
   target: LatLng(37.42796133580664, -122.085749655962),

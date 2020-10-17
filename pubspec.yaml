@@ -36,6 +36,7 @@ dependencies:
   firebase_auth: ^0.18.1+2
   firebase_database: ^4.1.1
   animated_text_kit: ^2.4.0
+  firebase_messaging: ^7.0.3
   google_maps_flutter: ^1.0.2
   flutter_polyline_points: ^0.2.4
 

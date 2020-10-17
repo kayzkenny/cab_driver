@@ -61,7 +61,7 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   Future<void> goOnline() async {
-    await Geofire.initialize('driversAvaliable');
+    await Geofire.initialize('driversAvailable');
     await Geofire.setLocation(
       currentFirebaseUser.uid,
       currentPosition.latitude,

@@ -13,10 +13,10 @@ import 'package:cab_driver/screens/registration_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final FirebaseApp app = await Firebase.initializeApp(
+  await Firebase.initializeApp(
     // name property throws an error on hot restart, default param used instead
     // name: 'db2',
-    // IOS FirebaseOptions Not Yet Configures
+    // IOS FirebaseOptions Not Yet Configured
     options: Platform.isIOS || Platform.isMacOS
         ? FirebaseOptions(
             appId: '1:297855924061:ios:c6de2b69b03a5be8',

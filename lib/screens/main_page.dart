@@ -27,7 +27,6 @@ class _MainPageState extends State<MainPage>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     tabController = TabController(
       length: 4,
@@ -37,7 +36,6 @@ class _MainPageState extends State<MainPage>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 

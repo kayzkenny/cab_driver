@@ -3,6 +3,7 @@ import 'package:cab_driver/models/trip_details.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:cab_driver/widgets/brand_divider.dart';
+import 'package:cab_driver/shared/global_variables.dart';
 import 'package:cab_driver/widgets/taxi_outline_button.dart';
 
 class NotificationDialog extends StatelessWidget {
@@ -106,12 +107,16 @@ class NotificationDialog extends StatelessWidget {
                 TaxiOutlineButton(
                   title: 'DECLINE',
                   color: BrandColors.colorPrimary,
-                  onPressed: () async {},
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
                 ),
                 TaxiButton(
                   title: 'ACCEPT',
                   color: BrandColors.colorGreen,
-                  onPressed: () async {},
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
                 )
               ],
             )

@@ -81,15 +81,15 @@ class PushNotificationService {
       double pickupLng = double.parse(
         snapshot.value['location']['longitude'].toString(),
       );
-      String pickupAddress = snapshot.value['pickup_address'].toString();
       double destinationLat = double.parse(
         snapshot.value['destination']['latitude'].toString(),
       );
       double destinationLng = double.parse(
         snapshot.value['destination']['longitude'].toString(),
       );
-      String destinationAddress = snapshot.value['destination_address'];
       String paymentMethod = snapshot.value['payment_method'];
+      String pickupAddress = snapshot.value['pickup_address'];
+      String destinationAddress = snapshot.value['destination_address'];
 
       TripDetails tripDetails = TripDetails(
         rideID: rideID,
@@ -100,11 +100,15 @@ class PushNotificationService {
         destination: LatLng(destinationLat, destinationLng),
       );
 
-      showDialog(
+      final currentPlayer = await player.play('alert.mp3');
+
+      await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => NotificationDialog(tripDetails: tripDetails),
       );
+
+      await currentPlayer.stop();
     }
   }
 }

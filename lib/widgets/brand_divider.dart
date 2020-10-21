@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class BrandDivider extends StatelessWidget {
   final double indent;
   final double endIndent;
+  final double height;
 
   const BrandDivider({
+    this.height = 32.0,
     this.indent = 0.0,
     this.endIndent = 0.0,
     Key key,

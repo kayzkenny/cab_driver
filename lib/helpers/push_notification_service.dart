@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:cab_driver/models/trip_details.dart';
 import 'package:cab_driver/shared/global_variables.dart';
 import 'package:cab_driver/widgets/progress_dialog.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
+import 'package:cab_driver/widgets/notification_dialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PushNotificationService {
@@ -71,6 +72,8 @@ class PushNotificationService {
 
     DataSnapshot snapshot = await rideRef.once();
 
+    Navigator.pop(context);
+
     if (snapshot.value != null) {
       double pickupLat = double.parse(
         snapshot.value['location']['latitude'].toString(),
@@ -97,9 +100,11 @@ class PushNotificationService {
         destination: LatLng(destinationLat, destinationLng),
       );
 
-      print(tripDetails.destinationAddress);
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => NotificationDialog(tripDetails: tripDetails),
+      );
     }
-
-    Navigator.pop(context);
   }
 }

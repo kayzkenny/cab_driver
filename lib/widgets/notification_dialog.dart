@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cab_driver/models/trip_details.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
+import 'package:cab_driver/screens/new_trip_page.dart';
 import 'package:cab_driver/widgets/brand_divider.dart';
 import 'package:cab_driver/shared/global_variables.dart';
+import 'package:cab_driver/widgets/progress_dialog.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:cab_driver/widgets/taxi_outline_button.dart';
 
 class NotificationDialog extends StatelessWidget {
@@ -13,6 +16,55 @@ class NotificationDialog extends StatelessWidget {
     this.tripDetails,
     Key key,
   }) : super(key: key);
+
+  // TODO: Use when ScaffoldMessenger is avaliable on the stable channel
+  // void showSnackbar({BuildContext context, String content}) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(content),
+  //     ),
+  //   );
+  // }
+
+  Future<void> checkAvailability(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ProgressDialog(
+        status: 'Accepting request...',
+      ),
+    );
+
+    DatabaseReference newRideRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentFirebaseUser.uid}/newtrip');
+
+    String thisRideID = "";
+    DataSnapshot snapshot = await newRideRef.once();
+
+    Navigator.pop(context);
+
+    snapshot.value != null
+        ? thisRideID = snapshot.value.toString()
+        : print("Ride not found");
+    // showSnackbar(context: context, content: "Ride not found");
+
+    if (thisRideID == tripDetails.rideID) {
+      await newRideRef.set('accepted');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NewTripPage(tripDetails: tripDetails),
+        ),
+      );
+    } else if (thisRideID == 'cancelled') {
+      // showSnackbar(context: context, content: "Ride Cancelled");
+    } else if (thisRideID == 'timeout') {
+      // showSnackbar(context: context, content: "Request timed out");
+    } else {
+      // showSnackbar(context: context, content: "Ride not found");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +167,7 @@ class NotificationDialog extends StatelessWidget {
                   title: 'ACCEPT',
                   color: BrandColors.colorGreen,
                   onPressed: () async {
+                    await checkAvailability(context);
                     Navigator.pop(context);
                   },
                 )

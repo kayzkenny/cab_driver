@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/models/trip_details.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
@@ -31,6 +33,26 @@ class _NewTripPageState extends State<NewTripPage> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   double mapBottomPadding = 0;
+  BitmapDescriptor movingMarkerIcon;
+  Position myPosition;
+
+  // final geolocator = getCurrentPosition();
+  final locationOptions =
+      LocationOptions(accuracy: LocationAccuracy.bestForNavigation);
+
+  Future<void> createMarker() async {
+    if (movingMarkerIcon == null) {
+      ImageConfiguration imageConfiguration = createLocalImageConfiguration(
+        context,
+        size: Size(2, 2),
+      );
+
+      movingMarkerIcon = await BitmapDescriptor.fromAssetImage(
+        imageConfiguration,
+        (Platform.isIOS) ? 'images/car_ios.png' : 'images/car_android.png',
+      );
+    }
+  }
 
   Future<void> acceptTrip() async {
     String rideID = widget.tripDetails.rideID;
@@ -183,6 +205,37 @@ class _NewTripPageState extends State<NewTripPage> {
     });
   }
 
+  void getLocationUpdates() {
+    ridePositionStream = getPositionStream(
+      desiredAccuracy: LocationAccuracy.bestForNavigation,
+    ).listen((Position position) {
+      myPosition = position;
+      currentPosition = position;
+      LatLng pos = LatLng(position.latitude, position.longitude);
+
+      Marker movingMaker = Marker(
+        markerId: MarkerId('moving'),
+        position: pos,
+        icon: movingMarkerIcon,
+        infoWindow: InfoWindow(title: 'Current Location'),
+      );
+
+      setState(() {
+        CameraPosition cp = CameraPosition(
+          target: pos,
+          zoom: 17,
+        );
+
+        rideMapController.animateCamera(
+          CameraUpdate.newCameraPosition(cp),
+        );
+
+        _markers.removeWhere((marker) => marker.markerId.value == 'moving');
+        _markers.add(movingMaker);
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -191,6 +244,7 @@ class _NewTripPageState extends State<NewTripPage> {
 
   @override
   Widget build(BuildContext context) {
+    createMarker();
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -211,13 +265,13 @@ class _NewTripPageState extends State<NewTripPage> {
                 _controller.complete(controller);
                 rideMapController = controller;
                 setState(() => mapBottomPadding = 300);
-                // setupPositionLocator();
                 var currentLatLng = LatLng(
                   currentPosition.latitude,
                   currentPosition.longitude,
                 );
                 var pickupLatLng = widget.tripDetails.pickup;
                 await getDirection(currentLatLng, pickupLatLng);
+                getLocationUpdates();
               },
             ),
             Positioned(

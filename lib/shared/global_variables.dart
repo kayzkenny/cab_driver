@@ -19,6 +19,7 @@ Driver currentDriverInfo;
 Position currentPosition;
 DatabaseReference rideRef;
 auth.User currentFirebaseUser;
+StreamSubscription<Position> ridePositionStream;
 StreamSubscription<Position> homeTabPositionStream;
 
 final player = AudioCache(prefix: 'sounds/');

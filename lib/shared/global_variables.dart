@@ -13,6 +13,7 @@ String placeDetailsEndpoint = '$googleMapsEndpoint/place/details/json';
 String directionsEndpoint = '$googleMapsEndpoint/directions/json';
 
 User currentUserInfo;
+Position currentPosition;
 auth.User currentFirebaseUser;
 StreamSubscription<Position> homeTabPositionStream;
 

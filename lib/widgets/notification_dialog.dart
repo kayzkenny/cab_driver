@@ -168,7 +168,7 @@ class NotificationDialog extends StatelessWidget {
                   color: BrandColors.colorGreen,
                   onPressed: () async {
                     await checkAvailability(context);
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
                   },
                 )
               ],

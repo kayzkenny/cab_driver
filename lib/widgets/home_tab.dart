@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:cab_driver/widgets/confirm_sheet.dart';
-import 'package:cab_driver/helpers/helper_methods.dart';
 import 'package:cab_driver/shared/global_variables.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cab_driver/widgets/availability_button.dart';
@@ -21,7 +20,7 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   Completer<GoogleMapController> _controller = Completer();
   GoogleMapController mapController;
-  Position currentPosition;
+
   double mapTopPadding = 135;
   DatabaseReference tripRequestRef;
   String availabilityTitle = 'GO ONLINE';
@@ -54,12 +53,6 @@ class _HomeTabState extends State<HomeTab> {
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(cp),
     );
-
-    String address = await HelperMethods.findCoordinateAddress(
-      position,
-      context,
-    );
-    print(address);
   }
 
   Future<void> goOnline() async {

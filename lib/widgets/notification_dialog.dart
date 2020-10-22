@@ -4,6 +4,7 @@ import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:cab_driver/screens/new_trip_page.dart';
 import 'package:cab_driver/widgets/brand_divider.dart';
+import 'package:cab_driver/helpers/helper_methods.dart';
 import 'package:cab_driver/shared/global_variables.dart';
 import 'package:cab_driver/widgets/progress_dialog.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -51,6 +52,7 @@ class NotificationDialog extends StatelessWidget {
 
     if (thisRideID == tripDetails.rideID) {
       await newRideRef.set('accepted');
+      await HelperMethods.disableHomeTabLocationUpdates();
       Navigator.push(
         context,
         MaterialPageRoute(

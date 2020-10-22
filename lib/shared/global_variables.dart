@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:cab_driver/models/user.dart';
+import 'package:cab_driver/models/driver.dart';
 import 'package:audioplayers/audio_cache.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -13,7 +15,9 @@ String placeDetailsEndpoint = '$googleMapsEndpoint/place/details/json';
 String directionsEndpoint = '$googleMapsEndpoint/directions/json';
 
 User currentUserInfo;
+Driver currentDriverInfo;
 Position currentPosition;
+DatabaseReference rideRef;
 auth.User currentFirebaseUser;
 StreamSubscription<Position> homeTabPositionStream;
 

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:cab_driver/models/driver.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -81,8 +82,16 @@ class _HomeTabState extends State<HomeTab> {
 
   Future<void> getCurrentDriverInfo() async {
     currentFirebaseUser = FirebaseAuth.instance.currentUser;
-    PushNotificationService pushNotificationService = PushNotificationService();
+    DatabaseReference driverRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentFirebaseUser.uid}');
 
+    DataSnapshot snapshot = await driverRef.once();
+    if (snapshot.value != null) {
+      currentDriverInfo = Driver.fromSnapshot(snapshot);
+    }
+
+    PushNotificationService pushNotificationService = PushNotificationService();
     await pushNotificationService.initialize(context);
     await pushNotificationService.getToken();
   }

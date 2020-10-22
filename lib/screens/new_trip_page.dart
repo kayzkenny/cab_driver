@@ -7,6 +7,7 @@ import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:cab_driver/helpers/helper_methods.dart';
 import 'package:cab_driver/widgets/progress_dialog.dart';
 import 'package:cab_driver/shared/global_variables.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
@@ -30,6 +31,25 @@ class _NewTripPageState extends State<NewTripPage> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   double mapBottomPadding = 0;
+
+  Future<void> acceptTrip() async {
+    String rideID = widget.tripDetails.rideID;
+    Map locationMap = {
+      'latitude': currentPosition.latitude.toString(),
+      'longitude': currentPosition.longitude.toString(),
+    };
+    rideRef =
+        FirebaseDatabase.instance.reference().child('rideRequest/$rideID');
+
+    await rideRef.child('status').set('accepted');
+    await rideRef.child('driver_location').set(locationMap);
+    await rideRef.child('driver_id').set(currentDriverInfo.id);
+    await rideRef.child('driver_phone').set(currentDriverInfo.phone);
+    await rideRef.child('driver_name').set(currentDriverInfo.fullName);
+    await rideRef
+        .child('car_details')
+        .set('${currentDriverInfo.carColor} - ${currentDriverInfo.carModel}');
+  }
 
   Future<void> getDirection(
     LatLng pickupLatLng,
@@ -161,6 +181,12 @@ class _NewTripPageState extends State<NewTripPage> {
       _circles.add(pickupCircle);
       _circles.add(destinationCircle);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    acceptTrip();
   }
 
   @override

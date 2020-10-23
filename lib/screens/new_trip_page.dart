@@ -36,10 +36,42 @@ class _NewTripPageState extends State<NewTripPage> {
   double mapBottomPadding = 0;
   BitmapDescriptor movingMarkerIcon;
   Position myPosition;
+  String status = 'accepted';
+  String durationString = "";
+  bool isRequestingDirection = false;
 
   // final geolocator = getCurrentPosition();
   final locationOptions =
       LocationOptions(accuracy: LocationAccuracy.bestForNavigation);
+
+  Future<void> updateTripDetails() async {
+    if (!isRequestingDirection) {
+      isRequestingDirection = true;
+
+      if (myPosition == null) {
+        return;
+      }
+
+      var positionLatLng = LatLng(myPosition.latitude, myPosition.longitude);
+      LatLng destinationLatLng;
+
+      destinationLatLng = status == 'accepted'
+          ? widget.tripDetails.pickup
+          : widget.tripDetails.destination;
+
+      var directionDetails = await HelperMethods.getDirectionDetails(
+        positionLatLng,
+        destinationLatLng,
+      );
+
+      if (directionDetails != null) {
+        setState(() {
+          durationString = directionDetails.durationText;
+        });
+      }
+    }
+    isRequestingDirection = false;
+  }
 
   Future<void> createMarker() async {
     if (movingMarkerIcon == null) {
@@ -211,7 +243,7 @@ class _NewTripPageState extends State<NewTripPage> {
 
     ridePositionStream = getPositionStream(
       desiredAccuracy: LocationAccuracy.bestForNavigation,
-    ).listen((Position position) {
+    ).listen((Position position) async {
       myPosition = position;
       currentPosition = position;
       LatLng pos = LatLng(position.latitude, position.longitude);
@@ -245,6 +277,15 @@ class _NewTripPageState extends State<NewTripPage> {
         _markers.add(movingMaker);
       });
       oldPosition = pos;
+
+      await updateTripDetails();
+
+      Map locationMap = {
+        'latitude': myPosition.latitude.toString(),
+        'longitude': myPosition.longitude.toString(),
+      };
+
+      await rideRef.child('driver_location').set(locationMap);
     });
   }
 
@@ -313,7 +354,7 @@ class _NewTripPageState extends State<NewTripPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '14 mins',
+                      durationString,
                       style: TextStyle(
                         fontSize: 14,
                         fontFamily: 'Brand-Bold',

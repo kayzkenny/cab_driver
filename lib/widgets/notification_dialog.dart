@@ -53,6 +53,7 @@ class NotificationDialog extends StatelessWidget {
     if (thisRideID == tripDetails.rideID) {
       await newRideRef.set('accepted');
       await HelperMethods.disableHomeTabLocationUpdates();
+      Navigator.pop(context);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -169,8 +170,8 @@ class NotificationDialog extends StatelessWidget {
                   title: 'ACCEPT',
                   color: BrandColors.colorGreen,
                   onPressed: () async {
-                    Navigator.pop(context);
                     await checkAvailability(context);
+                    // Navigator.pop(context);
                   },
                 )
               ],

@@ -49,6 +49,23 @@ class _NewTripPageState extends State<NewTripPage> {
   final locationOptions =
       LocationOptions(accuracy: LocationAccuracy.bestForNavigation);
 
+  Future<void> topUpEarnings(int fares) async {
+    DatabaseReference earningsRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentFirebaseUser.uid}/earnings');
+
+    DataSnapshot snapshot = await earningsRef.once();
+
+    if (snapshot.value != null) {
+      double oldEarnings = double.parse(snapshot.value.toString());
+      double adjustedFares = (fares.toDouble() * 0.85) + oldEarnings;
+      await earningsRef.set(adjustedFares.toStringAsFixed(2));
+    } else {
+      double adjustedFares = (fares.toDouble() * 0.85);
+      await earningsRef.set(adjustedFares.toStringAsFixed(2));
+    }
+  }
+
   Future<void> updateTripDetails() async {
     if (!isRequestingDirection) {
       isRequestingDirection = true;
@@ -270,6 +287,8 @@ class _NewTripPageState extends State<NewTripPage> {
         fares: fares,
       ),
     );
+
+    await topUpEarnings(fares);
 
     Navigator.pop(context);
   }

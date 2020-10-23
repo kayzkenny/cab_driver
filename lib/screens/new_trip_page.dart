@@ -45,7 +45,6 @@ class _NewTripPageState extends State<NewTripPage> {
   Timer timer;
   int durationCounter = 0;
 
-  // final geolocator = getCurrentPosition();
   final locationOptions =
       LocationOptions(accuracy: LocationAccuracy.bestForNavigation);
 
@@ -115,6 +114,9 @@ class _NewTripPageState extends State<NewTripPage> {
       'latitude': currentPosition.latitude.toString(),
       'longitude': currentPosition.longitude.toString(),
     };
+    DatabaseReference historyRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentFirebaseUser.uid}/history/$rideID');
     rideRef =
         FirebaseDatabase.instance.reference().child('rideRequest/$rideID');
 
@@ -126,6 +128,7 @@ class _NewTripPageState extends State<NewTripPage> {
     await rideRef
         .child('car_details')
         .set('${currentDriverInfo.carColor} - ${currentDriverInfo.carModel}');
+    await historyRef.set(true);
   }
 
   Future<void> getDirection(
@@ -427,7 +430,7 @@ class _NewTripPageState extends State<NewTripPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Daniel Jones',
+                          widget.tripDetails.riderName,
                           style: TextStyle(
                             fontSize: 22,
                             fontFamily: 'Brand-Bold',
@@ -450,7 +453,7 @@ class _NewTripPageState extends State<NewTripPage> {
                         Expanded(
                           child: Container(
                             child: Text(
-                              'NTSC RD, Alakahia Nigeria',
+                              widget.tripDetails.pickupAddress,
                               style: TextStyle(fontSize: 18),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -469,7 +472,7 @@ class _NewTripPageState extends State<NewTripPage> {
                         Expanded(
                           child: Container(
                             child: Text(
-                              'SPAR PH',
+                              widget.tripDetails.destinationAddress,
                               style: TextStyle(fontSize: 18),
                               overflow: TextOverflow.ellipsis,
                             ),

@@ -87,12 +87,16 @@ class PushNotificationService {
       double destinationLng = double.parse(
         snapshot.value['destination']['longitude'].toString(),
       );
+      String riderName = snapshot.value['rider_name'];
+      String riderPhone = snapshot.value['rider_phone'];
       String paymentMethod = snapshot.value['payment_method'];
       String pickupAddress = snapshot.value['pickup_address'];
       String destinationAddress = snapshot.value['destination_address'];
 
       TripDetails tripDetails = TripDetails(
         rideID: rideID,
+        riderName: riderName,
+        riderPhone: riderPhone,
         paymentMethod: paymentMethod,
         pickupAddress: pickupAddress,
         destinationAddress: destinationAddress,

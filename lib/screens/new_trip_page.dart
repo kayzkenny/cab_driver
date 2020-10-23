@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/models/trip_details.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
+import 'package:cab_driver/helpers/mapkit_helper.dart';
 import 'package:cab_driver/helpers/helper_methods.dart';
 import 'package:cab_driver/widgets/progress_dialog.dart';
 import 'package:cab_driver/shared/global_variables.dart';
@@ -206,6 +207,8 @@ class _NewTripPageState extends State<NewTripPage> {
   }
 
   void getLocationUpdates() {
+    LatLng oldPosition = LatLng(0, 0);
+
     ridePositionStream = getPositionStream(
       desiredAccuracy: LocationAccuracy.bestForNavigation,
     ).listen((Position position) {
@@ -213,10 +216,18 @@ class _NewTripPageState extends State<NewTripPage> {
       currentPosition = position;
       LatLng pos = LatLng(position.latitude, position.longitude);
 
+      var rotation = MapKitHelper.getMarkerRotation(
+        oldPosition.latitude,
+        oldPosition.longitude,
+        pos.latitude,
+        pos.longitude,
+      );
+
       Marker movingMaker = Marker(
-        markerId: MarkerId('moving'),
         position: pos,
+        rotation: rotation,
         icon: movingMarkerIcon,
+        markerId: MarkerId('moving'),
         infoWindow: InfoWindow(title: 'Current Location'),
       );
 
@@ -233,6 +244,7 @@ class _NewTripPageState extends State<NewTripPage> {
         _markers.removeWhere((marker) => marker.markerId.value == 'moving');
         _markers.add(movingMaker);
       });
+      oldPosition = pos;
     });
   }
 

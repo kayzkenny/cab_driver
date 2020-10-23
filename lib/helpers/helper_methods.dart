@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:cab_driver/shared/api_keys.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:cab_driver/helpers/request_helper.dart';
 import 'package:cab_driver/shared/global_variables.dart';
+import 'package:cab_driver/widgets/progress_dialog.dart';
 import 'package:cab_driver/models/direction_details.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -61,6 +63,16 @@ class HelperMethods {
       currentFirebaseUser.uid,
       currentPosition.latitude,
       currentPosition.longitude,
+    );
+  }
+
+  static void showProgressDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => ProgressDialog(
+        status: 'Please wait',
+      ),
     );
   }
 }

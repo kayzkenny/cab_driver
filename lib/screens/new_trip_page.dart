@@ -38,7 +38,11 @@ class _NewTripPageState extends State<NewTripPage> {
   Position myPosition;
   String status = 'accepted';
   String durationString = "";
+  String buttonTitle = 'ARRIVED';
   bool isRequestingDirection = false;
+  Color buttonColor = BrandColors.colorGreen;
+  Timer timer;
+  int durationCounter = 0;
 
   // final geolocator = getCurrentPosition();
   final locationOptions =
@@ -289,6 +293,13 @@ class _NewTripPageState extends State<NewTripPage> {
     });
   }
 
+  void startTimer() {
+    const interval = Duration(seconds: 1);
+    timer = Timer.periodic(interval, (timer) {
+      durationCounter++;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -416,9 +427,38 @@ class _NewTripPageState extends State<NewTripPage> {
                       ],
                     ),
                     TaxiButton(
-                      title: 'ARRIVED',
-                      color: BrandColors.colorGreen,
-                      onPressed: () {},
+                      title: buttonTitle,
+                      color: buttonColor,
+                      onPressed: () async {
+                        if (status == 'accepted') {
+                          status = 'arrived';
+                          await rideRef.child('status').set('arrived');
+
+                          setState(() {
+                            buttonTitle = 'START TRIP';
+                            buttonColor = BrandColors.colorAccentPurple;
+                          });
+
+                          HelperMethods.showProgressDialog(context);
+
+                          await getDirection(
+                            widget.tripDetails.pickup,
+                            widget.tripDetails.destination,
+                          );
+
+                          Navigator.pop(context);
+                        } else if (status == 'arrived') {
+                          status = 'ontrip';
+                          await rideRef.child('status').set('ontrip');
+
+                          setState(() {
+                            buttonTitle = 'END TRIP';
+                            buttonColor = Colors.red[900];
+                          });
+
+                          startTimer();
+                        }
+                      },
                     )
                   ],
                 ),

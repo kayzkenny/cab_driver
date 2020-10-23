@@ -169,8 +169,8 @@ class NotificationDialog extends StatelessWidget {
                   title: 'ACCEPT',
                   color: BrandColors.colorGreen,
                   onPressed: () async {
+                    Navigator.pop(context);
                     await checkAvailability(context);
-                    // Navigator.pop(context);
                   },
                 )
               ],

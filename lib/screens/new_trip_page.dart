@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cab_driver/widgets/collect_payment_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
@@ -260,6 +261,17 @@ class _NewTripPageState extends State<NewTripPage> {
     await rideRef.child('fares').set(fares.toString());
     await rideRef.child('status').set('ended');
     await ridePositionStream.cancel();
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => CollectPaymentDialog(
+        paymentMethod: widget.tripDetails.paymentMethod,
+        fares: fares,
+      ),
+    );
+
+    Navigator.pop(context);
   }
 
   void getLocationUpdates() {
@@ -481,7 +493,7 @@ class _NewTripPageState extends State<NewTripPage> {
                           await endTrip();
                         }
                       },
-                    )
+                    ),
                   ],
                 ),
               ),

@@ -242,6 +242,26 @@ class _NewTripPageState extends State<NewTripPage> {
     });
   }
 
+  Future<void> endTrip() async {
+    timer.cancel();
+
+    HelperMethods.showProgressDialog(context);
+
+    var currentLatLng = LatLng(myPosition.latitude, myPosition.longitude);
+    var directionDetails = await HelperMethods.getDirectionDetails(
+      widget.tripDetails.pickup,
+      currentLatLng,
+    );
+
+    Navigator.pop(context);
+
+    int fares = HelperMethods.estimateFares(directionDetails, durationCounter);
+
+    await rideRef.child('fares').set(fares.toString());
+    await rideRef.child('status').set('ended');
+    await ridePositionStream.cancel();
+  }
+
   void getLocationUpdates() {
     LatLng oldPosition = LatLng(0, 0);
 
@@ -457,6 +477,8 @@ class _NewTripPageState extends State<NewTripPage> {
                           });
 
                           startTimer();
+                        } else if (status == 'ontrip') {
+                          await endTrip();
                         }
                       },
                     )

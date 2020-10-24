@@ -17,7 +17,7 @@ class BrandDivider extends StatelessWidget {
     BuildContext context,
   ) {
     return Divider(
-      height: 32.0,
+      height: height,
       color: Color(0xFFe2e2e2),
       thickness: 1.0,
       endIndent: endIndent,

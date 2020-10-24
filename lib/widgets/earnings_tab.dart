@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cab_driver/providers/app_data.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:cab_driver/widgets/brand_divider.dart';
 
@@ -21,7 +23,7 @@ class EarningsTab extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '\$10',
+                  '\$${Provider.of<AppData>(context).earnings}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 40,

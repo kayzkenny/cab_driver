@@ -1,12 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:cab_driver/shared/api_keys.dart';
+import 'package:cab_driver/providers/app_data.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:cab_driver/helpers/request_helper.dart';
 import 'package:cab_driver/shared/global_variables.dart';
 import 'package:cab_driver/widgets/progress_dialog.dart';
 import 'package:cab_driver/models/direction_details.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HelperMethods {
@@ -72,5 +75,18 @@ class HelperMethods {
         status: 'Please wait',
       ),
     );
+  }
+
+  static Future<void> getHistoryInfo(BuildContext context) async {
+    DatabaseReference earningsRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentFirebaseUser.uid}/earnings');
+
+    DataSnapshot snapshot = await earningsRef.once();
+
+    if (snapshot.value != null) {
+      String earnings = snapshot.value.toString();
+      Provider.of<AppData>(context, listen: false).updateEarnings(earnings);
+    }
   }
 }

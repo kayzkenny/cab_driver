@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cab_driver/models/address.dart';
 
 class AppData extends ChangeNotifier {
-  Address pickupAddress;
-  Address destinationAddress;
+  String earnings = '0';
 
-  void updatePickupAddress(Address pickup) {
-    pickupAddress = pickup;
-    notifyListeners();
-  }
-
-  void updateDestinationAddress(Address destination) {
-    destinationAddress = destination;
+  void updateEarnings(String newEarnings) {
+    earnings = newEarnings;
     notifyListeners();
   }
 }

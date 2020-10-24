@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:cab_driver/widgets/confirm_sheet.dart';
+import 'package:cab_driver/helpers/helper_methods.dart';
 import 'package:cab_driver/shared/global_variables.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cab_driver/widgets/availability_button.dart';
@@ -92,8 +93,10 @@ class _HomeTabState extends State<HomeTab> {
     }
 
     PushNotificationService pushNotificationService = PushNotificationService();
+
     await pushNotificationService.initialize(context);
     await pushNotificationService.getToken();
+    await HelperMethods.getHistoryInfo(context);
   }
 
   void getlocationUpdates() {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cab_driver/providers/app_data.dart';
+import 'package:cab_driver/screens/history_page.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:cab_driver/widgets/brand_divider.dart';
 
@@ -36,7 +37,14 @@ class EarningsTab extends StatelessWidget {
         ),
         FlatButton(
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 18),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HistoryPage(),
+              ),
+            );
+          },
           child: Row(
             children: [
               Image.asset(
@@ -51,7 +59,7 @@ class EarningsTab extends StatelessWidget {
               Expanded(
                 child: Container(
                   child: Text(
-                    '3',
+                    Provider.of<AppData>(context).tripCount.toString(),
                     textAlign: TextAlign.end,
                     style: TextStyle(fontSize: 18),
                   ),

@@ -1,7 +1,9 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cab_driver/models/history.dart';
 import 'package:cab_driver/shared/api_keys.dart';
 import 'package:cab_driver/providers/app_data.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -88,5 +90,56 @@ class HelperMethods {
       String earnings = snapshot.value.toString();
       Provider.of<AppData>(context, listen: false).updateEarnings(earnings);
     }
+
+    DatabaseReference historyRef = FirebaseDatabase.instance
+        .reference()
+        .child('drivers/${currentFirebaseUser.uid}/history');
+
+    DataSnapshot historySnapshot = await historyRef.once();
+
+    if (historySnapshot != null) {
+      Map<dynamic, dynamic> values = historySnapshot.value;
+      int tripCount = values.length;
+
+      // update trip count to data provider
+      Provider.of<AppData>(context, listen: false).updateTripCount(tripCount);
+
+      List<String> tripHistoryKeys = [];
+      values.forEach((key, value) {
+        tripHistoryKeys.add(key);
+      });
+
+      // update trip keys to data provider
+      Provider.of<AppData>(context, listen: false)
+          .updateTripKeys(tripHistoryKeys);
+
+      await getHistoryData(context);
+    }
+  }
+
+  static Future<void> getHistoryData(context) async {
+    var keys = Provider.of<AppData>(context, listen: false).tripHistoryKeys;
+
+    for (String key in keys) {
+      DatabaseReference historyRef =
+          FirebaseDatabase.instance.reference().child('rideRequest/$key');
+
+      DataSnapshot snapshot = await historyRef.once();
+
+      if (snapshot.value != null) {
+        var history = History.fromSnapshot(snapshot);
+        Provider.of<AppData>(context, listen: false).updateTripHistory(history);
+
+        print(history.destination);
+      }
+    }
+  }
+
+  static String formatMyDate(String datestring) {
+    DateTime thisDate = DateTime.parse(datestring);
+    String formattedDate =
+        '${DateFormat.MMMd().format(thisDate)}, ${DateFormat.y().format(thisDate)} - ${DateFormat.jm().format(thisDate)}';
+
+    return formattedDate;
   }
 }

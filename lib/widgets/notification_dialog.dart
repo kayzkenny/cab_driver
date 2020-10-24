@@ -45,10 +45,13 @@ class NotificationDialog extends StatelessWidget {
 
     Navigator.pop(context);
 
-    snapshot.value != null
-        ? thisRideID = snapshot.value.toString()
-        : print("Ride not found");
-    // showSnackbar(context: context, content: "Ride not found");
+    if (snapshot.value != null) {
+      thisRideID = snapshot.value.toString();
+    } else {
+      // showSnackbar(context: context, content: "Ride not found");
+      Navigator.pop(context);
+      print("Ride not found");
+    }
 
     if (thisRideID == tripDetails.rideID) {
       await newRideRef.set('accepted');
@@ -62,10 +65,13 @@ class NotificationDialog extends StatelessWidget {
       );
     } else if (thisRideID == 'cancelled') {
       // showSnackbar(context: context, content: "Ride Cancelled");
+      Navigator.pop(context);
     } else if (thisRideID == 'timeout') {
       // showSnackbar(context: context, content: "Request timed out");
+      Navigator.pop(context);
     } else {
       // showSnackbar(context: context, content: "Ride not found");
+      Navigator.pop(context);
     }
   }
 

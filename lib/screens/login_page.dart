@@ -19,19 +19,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   ConnectivityResult _connectionStatus;
-
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   final _auth = FirebaseAuth.instance;
-
-  final Connectivity _connectivity = Connectivity();
-
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final _connectivity = Connectivity();
   final formKey = GlobalKey<FormState>();
-
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
 
   void showSnackbar(String title) {

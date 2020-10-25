@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cab_driver/models/driver.dart';
+import 'package:cab_driver/screens/login_page.dart';
 import 'package:cab_driver/widgets/taxi_button.dart';
 import 'package:cab_driver/screens/brand_colors.dart';
 import 'package:cab_driver/shared/global_variables.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class ProfileTab extends StatefulWidget {
   @override
@@ -12,6 +14,8 @@ class ProfileTab extends StatefulWidget {
 
 class _ProfileTabState extends State<ProfileTab> {
   final _formKey = GlobalKey<FormState>();
+  final _auth = auth.FirebaseAuth.instance;
+
   // form values
   String _currentFullName = currentDriverInfo.fullName;
   String _currentCarModel = currentDriverInfo.carModel;
@@ -120,7 +124,19 @@ class _ProfileTabState extends State<ProfileTab> {
                     }
                   }
                 },
-              )
+              ),
+              SizedBox(height: 30.0),
+              TaxiButton(
+                color: BrandColors.colorOrange,
+                title: 'LOGOUT',
+                onPressed: () async {
+                  await _auth.signOut();
+                  Navigator.pushReplacementNamed(
+                    context,
+                    LoginPage.id,
+                  );
+                },
+              ),
             ],
           ),
         ),

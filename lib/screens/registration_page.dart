@@ -21,23 +21,15 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   ConnectivityResult _connectionStatus;
-
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   final _auth = FirebaseAuth.instance;
-
-  final Connectivity _connectivity = Connectivity();
-
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final _connectivity = Connectivity();
   final formKey = GlobalKey<FormState>();
-
-  final fullNameController = TextEditingController();
-
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   final phoneController = TextEditingController();
-
   final emailController = TextEditingController();
-
+  final fullNameController = TextEditingController();
   final passwordController = TextEditingController();
 
   void showSnackbar(String title) {

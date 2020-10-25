@@ -92,23 +92,17 @@ class _ProfileTabState extends State<ProfileTab> {
                 title: 'UPDATE',
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
-                    DatabaseReference fullNameRef = FirebaseDatabase.instance
-                        .reference()
+                    final dbRef = FirebaseDatabase.instance.reference();
+                    final fullNameRef = dbRef
                         .child('drivers/${currentFirebaseUser.uid}/fullname');
-                    DatabaseReference phoneRef = FirebaseDatabase.instance
-                        .reference()
-                        .child('drivers/${currentFirebaseUser.uid}/phone');
-                    DatabaseReference carColorRef = FirebaseDatabase.instance
-                        .reference()
-                        .child(
-                            'drivers/${currentFirebaseUser.uid}/vehicle_details/car_color');
-                    DatabaseReference carModelRef = FirebaseDatabase.instance
-                        .reference()
-                        .child(
-                            'drivers/${currentFirebaseUser.uid}/vehicle_details/car_model');
-                    DatabaseReference vehicleNumberRef =
-                        FirebaseDatabase.instance.reference().child(
-                            'drivers/${currentFirebaseUser.uid}/vehicle_details/vehicle_number');
+                    final phoneRef =
+                        dbRef.child('drivers/${currentFirebaseUser.uid}/phone');
+                    final carColorRef = dbRef.child(
+                        'drivers/${currentFirebaseUser.uid}/vehicle_details/car_color');
+                    final carModelRef = dbRef.child(
+                        'drivers/${currentFirebaseUser.uid}/vehicle_details/car_model');
+                    final vehicleNumberRef = dbRef.child(
+                        'drivers/${currentFirebaseUser.uid}/vehicle_details/vehicle_number');
 
                     await fullNameRef.set(_currentFullName);
                     await phoneRef.set(_currentPhoneNumber);
@@ -116,11 +110,11 @@ class _ProfileTabState extends State<ProfileTab> {
                     await carModelRef.set(_currentCarModel);
                     await vehicleNumberRef.set(_currentVehicleNumber);
 
-                    DatabaseReference driverRef = FirebaseDatabase.instance
-                        .reference()
-                        .child('drivers/${currentFirebaseUser.uid}');
+                    final driverRef =
+                        dbRef.child('drivers/${currentFirebaseUser.uid}');
 
                     DataSnapshot snapshot = await driverRef.once();
+
                     if (snapshot.value != null) {
                       currentDriverInfo = Driver.fromSnapshot(snapshot);
                     }
